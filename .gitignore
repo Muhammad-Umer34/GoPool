@@ -1,1 +1,12 @@
+# Environment variables
 .env
+.env.*
+*.env
+app/backend/.env
+
+# Dependencies & Build artifacts
+node_modules/
+dist/
+coverage/
+build/
+.DS_Store
