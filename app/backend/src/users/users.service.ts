@@ -10,12 +10,10 @@ export class UsersService {
   async create(createUserDto: CreateUserDto, passwordHash: string) {
     const { email, phoneNumber, firstName, lastName, role } = createUserDto;
 
-    // Check if user already exists
-    if (email) {
-      const existingEmail = await this.prisma.user.findUnique({ where: { email } });
-      if (existingEmail) {
-        throw new ConflictException('User with this email already exists');
-      }
+    // Check if email already exists
+    const existingEmail = await this.prisma.user.findUnique({ where: { email } });
+    if (existingEmail) {
+      throw new ConflictException('User with this email already exists');
     }
 
     if (phoneNumber) {

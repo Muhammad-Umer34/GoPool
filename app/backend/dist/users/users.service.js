@@ -19,11 +19,9 @@ let UsersService = class UsersService {
     }
     async create(createUserDto, passwordHash) {
         const { email, phoneNumber, firstName, lastName, role } = createUserDto;
-        if (email) {
-            const existingEmail = await this.prisma.user.findUnique({ where: { email } });
-            if (existingEmail) {
-                throw new common_1.ConflictException('User with this email already exists');
-            }
+        const existingEmail = await this.prisma.user.findUnique({ where: { email } });
+        if (existingEmail) {
+            throw new common_1.ConflictException('User with this email already exists');
         }
         if (phoneNumber) {
             const existingPhone = await this.prisma.user.findUnique({ where: { phoneNumber } });
