@@ -16,6 +16,7 @@ const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
 const drivers_module_1 = require("./drivers/drivers.module");
+const rides_module_1 = require("./rides/rides.module");
 const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("./auth/guards/roles.guard");
 let AppModule = class AppModule {
@@ -23,7 +24,14 @@ let AppModule = class AppModule {
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule, users_module_1.UsersModule, cloudinary_module_1.CloudinaryModule, drivers_module_1.DriversModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            auth_module_1.AuthModule,
+            users_module_1.UsersModule,
+            cloudinary_module_1.CloudinaryModule,
+            drivers_module_1.DriversModule,
+            rides_module_1.RidesModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
