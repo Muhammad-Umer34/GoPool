@@ -36,8 +36,10 @@ let AuthController = class AuthController {
         const refreshToken = user.refreshToken;
         return this.authService.refreshTokens(userId, refreshToken);
     }
-    async logout(userId) {
-        return this.authService.logout(userId);
+    async logout(userId, req) {
+        const authHeader = req.headers?.authorization;
+        const token = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : undefined;
+        return this.authService.logout(userId, token);
     }
     async getProfile(user) {
         const { passwordHash, refreshTokenHash, ...userProfile } = user;
@@ -78,8 +80,9 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('logout'),
     __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([

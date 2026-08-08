@@ -45,7 +45,7 @@ export declare class AuthController {
         access_token: string;
         refresh_token: string;
     }>;
-    logout(userId: string): Promise<{
+    logout(userId: string, req: any): Promise<{
         message: string;
     }>;
     getProfile(user: any): Promise<any>;

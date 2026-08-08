@@ -14,10 +14,12 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = require("bcrypt");
 const users_service_1 = require("../users/users.service");
+const redis_service_1 = require("../redis/redis.service");
 let AuthService = class AuthService {
-    constructor(usersService, jwtService) {
+    constructor(usersService, jwtService, redisService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
+        this.redisService = redisService;
     }
     async validateUser(identifier, pass) {
         const user = await this.usersService.findByEmailOrPhone(identifier);
@@ -92,8 +94,11 @@ let AuthService = class AuthService {
         await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
         return tokens;
     }
-    async logout(userId) {
+    async logout(userId, accessToken) {
         await this.usersService.updateRefreshTokenHash(userId, null);
+        if (accessToken) {
+            await this.redisService.blacklistToken(accessToken, 900);
+        }
         return { message: 'Logged out successfully' };
     }
 };
@@ -101,6 +106,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        redis_service_1.RedisService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

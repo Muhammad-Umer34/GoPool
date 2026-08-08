@@ -1,10 +1,12 @@
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { RedisService } from '../redis/redis.service';
 export declare class AuthService {
     private usersService;
     private jwtService;
-    constructor(usersService: UsersService, jwtService: JwtService);
+    private redisService;
+    constructor(usersService: UsersService, jwtService: JwtService, redisService: RedisService);
     validateUser(identifier: string, pass: string): Promise<any>;
     register(registerDto: RegisterDto): Promise<{
         access_token: string;
@@ -52,7 +54,7 @@ export declare class AuthService {
         access_token: string;
         refresh_token: string;
     }>;
-    logout(userId: string): Promise<{
+    logout(userId: string, accessToken?: string): Promise<{
         message: string;
     }>;
 }

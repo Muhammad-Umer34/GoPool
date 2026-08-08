@@ -9,12 +9,16 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './types/jwt-payload.type';
 
+import { RedisService } from '../redis/redis.service';
+
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private redisService: RedisService,
   ) {}
+
 
   async validateUser(identifier: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmailOrPhone(identifier);
@@ -132,8 +136,12 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(userId: string) {
+  async logout(userId: string, accessToken?: string) {
     await this.usersService.updateRefreshTokenHash(userId, null);
+    if (accessToken) {
+      await this.redisService.blacklistToken(accessToken, 900);
+    }
     return { message: 'Logged out successfully' };
   }
 }
+

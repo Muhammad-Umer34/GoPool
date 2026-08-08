@@ -17,6 +17,14 @@ const users_module_1 = require("./users/users.module");
 const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
 const drivers_module_1 = require("./drivers/drivers.module");
 const rides_module_1 = require("./rides/rides.module");
+const ratings_module_1 = require("./ratings/ratings.module");
+const tracking_module_1 = require("./tracking/tracking.module");
+const chat_module_1 = require("./chat/chat.module");
+const notifications_module_1 = require("./notifications/notifications.module");
+const admin_module_1 = require("./admin/admin.module");
+const throttler_1 = require("@nestjs/throttler");
+const schedule_1 = require("@nestjs/schedule");
+const redis_module_1 = require("./redis/redis.module");
 const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("./auth/guards/roles.guard");
 let AppModule = class AppModule {
@@ -26,15 +34,32 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             prisma_module_1.PrismaModule,
+            redis_module_1.RedisModule,
+            throttler_1.ThrottlerModule.forRoot([
+                {
+                    ttl: 60000,
+                    limit: 60,
+                },
+            ]),
+            schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             cloudinary_module_1.CloudinaryModule,
             drivers_module_1.DriversModule,
             rides_module_1.RidesModule,
+            ratings_module_1.RatingsModule,
+            tracking_module_1.TrackingModule,
+            chat_module_1.ChatModule,
+            notifications_module_1.NotificationsModule,
+            admin_module_1.AdminModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
+            },
             {
                 provide: core_1.APP_GUARD,
                 useClass: jwt_auth_guard_1.JwtAuthGuard,

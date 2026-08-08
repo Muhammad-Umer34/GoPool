@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Body,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -45,9 +46,12 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  async logout(@CurrentUser('id') userId: string) {
-    return this.authService.logout(userId);
+  async logout(@CurrentUser('id') userId: string, @Req() req: any) {
+    const authHeader = req.headers?.authorization;
+    const token = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : undefined;
+    return this.authService.logout(userId, token);
   }
+
 
   @Get('me')
   async getProfile(@CurrentUser() user: any) {
